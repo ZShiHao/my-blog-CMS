@@ -1,6 +1,7 @@
 <script setup>
 import {RouterView} from 'vue-router'
 import {onMounted,ref} from 'vue'
+import {Document,House} from "@element-plus/icons-vue";
 const suggestions=ref(['zhang','shi','hao'])
 const state=ref('')
 function querySearch(queryString,cb){
@@ -32,13 +33,15 @@ onMounted(()=>{
               default-active="2"
               class="el-menu-vertical-dem h-full "
           >
+            <el-menu-item index="1">
+              <el-icon><House /></el-icon>
+              <span>Home</span>
+            </el-menu-item>
             <el-menu-item index="2" class="pr-2" @click="$router.push('/blog')">
-              <span>Blog Management</span>
+              <el-icon><Document /></el-icon>
+              <span>Blogs</span>
             </el-menu-item>
-            <el-menu-item index="3">
-              <el-icon><document /></el-icon>
-              <span>Navigator Three</span>
-            </el-menu-item>
+
             <el-menu-item index="4">
               <el-icon><setting /></el-icon>
               <span>Navigator Four</span>

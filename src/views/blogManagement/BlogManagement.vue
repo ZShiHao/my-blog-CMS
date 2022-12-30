@@ -1,12 +1,25 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import {getBlogList,updateBlogStatus} from "@/apis/blogs";
-
+import { useRouter, useRoute } from 'vue-router'
+import {getBlogList,updateBlogStatus,deleteBlog} from "@/apis/blogs";
+import {Delete,Edit,Check,Setting} from "@element-plus/icons-vue"
 const blogList=ref([])
+
+const router=useRouter()
+
 
 async function handleStatusChange(row){
   const res=await updateBlogStatus({_id:row._id,activeStatus:row.activeStatus})
-  console.log(res)
+}
+
+async function handleDeleteBlog(row){
+  await deleteBlog(row._id)
+  const res=await getBlogList()
+  blogList.value=res.data
+}
+
+function handleSettingBlog(row){
+  router.push(`/blog/editBlog?id=${row._id}`)
 }
 
 onMounted(async ()=>{
@@ -18,7 +31,7 @@ onMounted(async ()=>{
 
 <template>
     <div>
-      <el-button type="primary" @click="$router.push('/blog/addBlog')">Add</el-button>
+      <el-button type="primary" @click="router.push('/blog/editBlog')">Add</el-button>
       <section>
         <el-table :data="blogList">
           <el-table-column fixed prop="title" label="Title"  />
@@ -30,17 +43,17 @@ onMounted(async ()=>{
           <el-table-column prop="createTime" label="CreateTime"  />
           <el-table-column prop="activeStatus" label="ActiveStatus" >
             <template #default="scope">
-              <el-switch v-model="scope.row.activeStatus" @change="handleStatusChange(scope.row)"/>
+              <el-switch class="ml-2"
+                         style="--el-switch-on-color: #13ce66;" v-model="scope.row.activeStatus" @change="handleStatusChange(scope.row)"/>
             </template>
           </el-table-column>
           <el-table-column prop="tags" label="Tags" />
           <el-table-column prop="category" label="Category"  />
           <el-table-column fixed="right" label="Operations" >
-            <template #default>
-              <el-button link type="primary" size="small"
-              >Detail</el-button
-              >
-              <el-button link type="primary" size="small">Edit</el-button>
+            <template #default="scope">
+              <el-button type="primary" :icon="Edit" circle />
+              <el-button type="success" :icon="Setting" @click="handleSettingBlog(scope.row)" circle />
+              <el-button type="danger" :icon="Delete" @click="handleDeleteBlog(scope.row)" circle />
             </template>
           </el-table-column>
         </el-table>

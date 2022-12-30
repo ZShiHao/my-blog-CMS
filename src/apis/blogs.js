@@ -10,6 +10,11 @@ async function addNewBlog(data){
     return res
 }
 
+async function deleteBlog(id){
+    const res=await client.delete(`/blog/delete?_id=${id}`)
+    return res
+}
+
 async function getBlogList(){
     const res=await client.get('/blog/list')
     return res
@@ -20,14 +25,15 @@ async function updateBlogStatus(data){
     return res
 }
 
-// async function getPost(id){
-//     const res=await client.get(`/post/${id}`)
-//     return res
-// }
+async function getBlogDetail(id){
+    const res=await client.get(`/blog/detail?_id=${id}`)
+    return res
+}
 
 export  {
     getBlogList,
     addNewBlog,
     updateBlogStatus,
-    // getPost
+    deleteBlog,
+    getBlogDetail
 }

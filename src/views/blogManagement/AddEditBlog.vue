@@ -1,8 +1,12 @@
 <script setup>
 import {reactive,ref,onMounted} from "vue";
+import { useRouter, useRoute } from 'vue-router'
 import { UploadFilled,Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
 import {getCategory} from "@/apis/category";
-import {addNewBlog} from '@/apis/blogs'
+import {addNewBlog,getBlogDetail} from '@/apis/blogs'
+
+const router=useRouter()
+const route=useRoute()
 
 const form=reactive({
   title:'',
@@ -17,8 +21,7 @@ const dialogVisible = ref(false)
 const category=ref([])
 
 
-
-function submitForm(formRef){
+async function submitForm(formRef){
   let formdata=new FormData()
   // 将对象转换成FormData格式的数据
   for (const item in form){
@@ -28,7 +31,8 @@ function submitForm(formRef){
       formdata.append(item,form[item])
     }
   }
-  addNewBlog(formdata).then((res) => console.log(res));
+  const res=await addNewBlog(formdata)
+  await router.push('/blog')
 }
 const handlePictureCardPreview = (file) => {
       dialogImageUrl.value = file.url
@@ -38,10 +42,13 @@ const handleRemove = (file) => {
   form.cover=[]
 }
 
-onMounted(()=>{
-  getCategory().then((res)=>{
-    category.value=res.data.category
-  })
+onMounted(async ()=>{
+  const res=await getCategory()
+  category.value=res.data.category
+  if (route.query.id){
+    const res=getBlogDetail(route.query.id)
+    console.log(res)
+  }
 })
 
 </script>
