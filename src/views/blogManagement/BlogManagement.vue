@@ -3,19 +3,37 @@ import {onMounted, ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {getBlogList,updateBlogStatus,deleteBlog} from "@/apis/blogs";
 import {Delete,Edit,Check,Setting} from "@element-plus/icons-vue"
+import { ElMessage, ElMessageBox } from 'element-plus'
+
 const blogList=ref([])
-
 const router=useRouter()
-
-
 async function handleStatusChange(row){
   const res=await updateBlogStatus({_id:row._id,activeStatus:row.activeStatus})
 }
 
 async function handleDeleteBlog(row){
-  await deleteBlog(row._id)
-  const res=await getBlogList()
-  blogList.value=res.data
+
+  try {
+    await ElMessageBox.confirm(
+        'Do you want to delete this blog ?',
+        'Warning',
+        {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning',
+        }
+    )
+    await deleteBlog(row._id)
+      ElMessage({
+        type: 'success',
+        message: 'Delete completed',
+      })
+    const res=await getBlogList()
+    blogList.value=res.data
+
+  }catch (e) {
+  }
+
 }
 
 function handleSettingBlog(row){

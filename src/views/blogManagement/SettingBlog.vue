@@ -1,7 +1,7 @@
 <script setup>
 import {reactive,ref,onMounted} from "vue";
 import { useRouter, useRoute } from 'vue-router'
-import { UploadFilled,Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
+import { UploadFilled,Delete, Download, Plus, ArrowRight } from '@element-plus/icons-vue'
 import {getCategory} from "@/apis/category";
 import {updateBlogSetting,getBlogDetail} from '@/apis/blogs'
 
@@ -27,7 +27,6 @@ async function submitForm(formRef){
     if (item==='cover'){
       // 如果是新添加的图片,才需要传cover参数
       if (form[item][0].status==="ready"){
-        console.log(form[item][0])
         formdata.append(item,form[item][0].raw)
       }
     }else {
@@ -64,6 +63,10 @@ onMounted(async ()=>{
 
 <template>
   <div>
+    <el-breadcrumb :separator-icon="ArrowRight">
+      <el-breadcrumb-item :to="{ path: '/blog' }">Blog Management</el-breadcrumb-item>
+      <el-breadcrumb-item>Setting Blog</el-breadcrumb-item>
+    </el-breadcrumb>
     <el-form ref="formRef">
       <el-form-item label="Title : ">
         <el-input v-model="form.title" />

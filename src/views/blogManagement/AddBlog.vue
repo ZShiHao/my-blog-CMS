@@ -1,9 +1,9 @@
 <script setup>
 import {reactive,ref,onMounted} from "vue";
 import { useRouter, useRoute } from 'vue-router'
-import { UploadFilled,Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
+import { UploadFilled,Delete, Download, Plus, ZoomIn ,ArrowRight} from '@element-plus/icons-vue'
 import {getCategory} from "@/apis/category";
-import {addNewBlog,getBlogDetail} from '@/apis/blogs'
+import {addNewBlog} from '@/apis/blogs'
 
 const router=useRouter()
 const route=useRoute()
@@ -51,6 +51,10 @@ onMounted(async ()=>{
 
 <template>
     <div>
+      <el-breadcrumb :separator-icon="ArrowRight">
+        <el-breadcrumb-item :to="{ path: '/blog' }">Blog Management</el-breadcrumb-item>
+        <el-breadcrumb-item>Add Blog</el-breadcrumb-item>
+      </el-breadcrumb>
       <el-form ref="formRef">
         <el-form-item label="Title : ">
           <el-input v-model="form.title" />
