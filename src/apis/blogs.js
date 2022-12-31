@@ -1,5 +1,12 @@
 import axios from "axios";
-import {data} from "autoprefixer";
+
+/*
+* TODO:
+*   1.异常处理
+*   2.代码注释
+*   3.
+*
+* */
 
 const client=axios.create({
     baseURL:'http://localhost:3000',
@@ -25,6 +32,11 @@ async function updateBlogStatus(data){
     return res
 }
 
+async function updateBlogSetting(id,data){
+    const res =await client.post(`/blog/setting?_id=${id}`,data)
+    return res
+}
+
 async function getBlogDetail(id){
     const res=await client.get(`/blog/detail?_id=${id}`)
     return res
@@ -35,5 +47,6 @@ export  {
     addNewBlog,
     updateBlogStatus,
     deleteBlog,
-    getBlogDetail
+    getBlogDetail,
+    updateBlogSetting
 }

@@ -19,7 +19,7 @@ async function handleDeleteBlog(row){
 }
 
 function handleSettingBlog(row){
-  router.push(`/blog/editBlog?id=${row._id}`)
+  router.push(`/blog/settingBlog?id=${row._id}`)
 }
 
 onMounted(async ()=>{
@@ -31,7 +31,7 @@ onMounted(async ()=>{
 
 <template>
     <div>
-      <el-button type="primary" @click="router.push('/blog/editBlog')">Add</el-button>
+      <el-button type="primary" @click="router.push('/blog/addBlog')">Add</el-button>
       <section>
         <el-table :data="blogList">
           <el-table-column fixed prop="title" label="Title"  />
@@ -49,6 +49,7 @@ onMounted(async ()=>{
           </el-table-column>
           <el-table-column prop="tags" label="Tags" />
           <el-table-column prop="category" label="Category"  />
+          <el-table-column  prop="name" label="FileName"  />
           <el-table-column fixed="right" label="Operations" >
             <template #default="scope">
               <el-button type="primary" :icon="Edit" circle />

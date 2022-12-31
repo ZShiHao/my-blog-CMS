@@ -45,10 +45,6 @@ const handleRemove = (file) => {
 onMounted(async ()=>{
   const res=await getCategory()
   category.value=res.data.category
-  if (route.query.id){
-    const res=getBlogDetail(route.query.id)
-    console.log(res)
-  }
 })
 
 </script>
@@ -67,7 +63,7 @@ onMounted(async ()=>{
         <el-form-item label="Active Blog: " >
           <el-switch v-model="form.activeStatus" />
         </el-form-item>
-        <el-form-item label="Blog File : ">
+        <el-form-item v-if="!route.query.id" label="Blog File : ">
           <el-upload
               class="upload-demo"
               drag

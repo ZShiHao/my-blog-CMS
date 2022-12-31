@@ -41,11 +41,6 @@ onMounted(()=>{
               <el-icon><Document /></el-icon>
               <span>Blogs</span>
             </el-menu-item>
-
-            <el-menu-item index="4">
-              <el-icon><setting /></el-icon>
-              <span>Navigator Four</span>
-            </el-menu-item>
           </el-menu>
           <section class="p-8 w-full">
             <router-view></router-view>
