@@ -1,23 +1,26 @@
 <script setup>
-import {reactive,ref,onMounted} from "vue";
-import { useRouter, useRoute } from 'vue-router'
-import { UploadFilled,Delete, Download, Plus, ArrowRight } from '@element-plus/icons-vue'
+import {onMounted, reactive, ref} from "vue";
+import {useRoute, useRouter} from 'vue-router'
+import {ArrowRight, Plus} from '@element-plus/icons-vue'
 import {getCategory} from "@/apis/category";
-import {updateBlogSetting,getBlogDetail} from '@/apis/blogs'
+import {getBlogDetail, updateBlogSetting} from '@/apis/blogs'
+import {getTags} from "@/apis/tags";
 
 const router=useRouter()
 const route=useRoute()
 
 const form=reactive({
-  title:'',
-  category:'',
-  activeStatus:true,
-  cover:[]
+  title: '',
+  category: '',
+  tags: [],
+  activeStatus: true,
+  cover: []
 })
 const formRef=ref()
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const category=ref([])
+const tags=ref([])
 const blogDetail=ref({})
 
 async function submitForm(formRef){
@@ -48,15 +51,17 @@ const handleRemove = (file) => {
 onMounted(async ()=>{
   const res=await getCategory()
   category.value=res.data.category
+  const tagsRes=await getTags()
+  tags.value=tagsRes.data
   const detail=await getBlogDetail(route.query.id)
   blogDetail.value=detail.data
-    for(const [key,value] of Object.entries(form)){
-      if (key==='cover'){
-        form[key].push({name:detail.data.coverName,url:detail.data.cover})
-      }else if (key!=='blog'){
-        form[key]=detail.data[key]
-      }
+  for(const [key,value] of Object.entries(form)){
+    if (key==='cover'){
+      form[key].push({name:detail.data.coverName,url:detail.data.cover})
+    }else if (key!=='blog'){
+      form[key]=detail.data[key]
     }
+  }
 })
 
 </script>
@@ -69,20 +74,31 @@ onMounted(async ()=>{
     </el-breadcrumb>
     <el-form ref="formRef">
       <el-form-item label="Title : ">
-        <el-input v-model="form.title" />
+        <el-input v-model="form.title"/>
       </el-form-item>
       <el-form-item label="Category : ">
         <el-select v-model="form.category" placeholder="Please select blog categoty">
           <el-option v-for="item in category" :label="item" :value="item"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="Active Blog: " >
+      <el-form-item label="Tags : ">
+        <el-checkbox-group v-model="form.tags">
+          <el-checkbox-button v-for="tag in tags" :key="tag" :label="tag">{{
+              tag
+            }}
+          </el-checkbox-button>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="Active Blog: ">
         <el-switch class="ml-2"
-                   style="--el-switch-on-color: #13ce66;" v-model="form.activeStatus" />
+                   v-model="form.activeStatus" style="--el-switch-on-color: #13ce66;"/>
       </el-form-item>
       <el-form-item label="Blog Cover : ">
-        <el-upload :limit="1" action="" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" accept="image/*" list-type="picture-card" v-model:file-list="form.cover" :auto-upload="false">
-          <el-icon><Plus /></el-icon>
+        <el-upload v-model:file-list="form.cover" :auto-upload="false" :limit="1" :on-preview="handlePictureCardPreview"
+                   :on-remove="handleRemove" accept="image/*" action="" list-type="picture-card">
+          <el-icon>
+            <Plus/>
+          </el-icon>
         </el-upload>
       </el-form-item>
       <el-form-item>

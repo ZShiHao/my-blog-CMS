@@ -41,7 +41,6 @@ function handleSettingBlog(row){
 }
 
 onMounted(async ()=>{
-  console.log(blogList)
   const res=await getBlogList()
   blogList.value=res.data
 })
@@ -59,13 +58,26 @@ onMounted(async ()=>{
             </template>
           </el-table-column>
           <el-table-column prop="createTime" label="CreateTime"  />
-          <el-table-column prop="activeStatus" label="ActiveStatus" >
+          <el-table-column prop="activeStatus" label="ActiveStatus" width="150">
             <template #default="scope">
               <el-switch class="ml-2"
                          style="--el-switch-on-color: #13ce66;" v-model="scope.row.activeStatus" @change="handleStatusChange(scope.row)"/>
             </template>
           </el-table-column>
-          <el-table-column prop="tags" label="Tags" />
+          <el-table-column prop="tags" label="Tags" width="300">
+            <template #default="scope">
+              <el-tag
+                  v-for="tag in scope.row.tags"
+                  :key="tag"
+                  :type="tag"
+                  class="mx-1"
+                  effect="light"
+                  round
+              >
+                {{ tag }}
+              </el-tag>
+            </template>
+          </el-table-column>
           <el-table-column prop="category" label="Category"  />
           <el-table-column  prop="name" label="FileName"  />
           <el-table-column fixed="right" label="Operations" >

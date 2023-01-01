@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { UploadFilled,Delete, Download, Plus, ZoomIn ,ArrowRight} from '@element-plus/icons-vue'
 import {getCategory} from "@/apis/category";
 import {addNewBlog} from '@/apis/blogs'
+import {getTags} from "@/apis/tags";
 
 const router=useRouter()
 const route=useRoute()
@@ -11,6 +12,7 @@ const route=useRoute()
 const form=reactive({
   title:'',
   category:'',
+  tags:[],
   activeStatus:true,
   blog:[],
   cover:[]
@@ -19,6 +21,7 @@ const formRef=ref()
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const category=ref([])
+const tags=ref([])
 
 
 async function submitForm(formRef){
@@ -45,6 +48,8 @@ const handleRemove = (file) => {
 onMounted(async ()=>{
   const res=await getCategory()
   category.value=res.data.category
+  const tagsRes=await getTags()
+  tags.value=tagsRes.data
 })
 
 </script>
@@ -63,6 +68,14 @@ onMounted(async ()=>{
           <el-select v-model="form.category" placeholder="Please select blog categoty">
             <el-option v-for="item in category" :label="item" :value="item"/>
           </el-select>
+        </el-form-item>
+        <el-form-item label="Tags : ">
+          <el-checkbox-group v-model="form.tags">
+            <el-checkbox-button v-for="tag in tags" :key="tag" :label="tag">{{
+                tag
+              }}
+            </el-checkbox-button>
+          </el-checkbox-group>
         </el-form-item>
         <el-form-item label="Active Blog: " >
           <el-switch v-model="form.activeStatus" />

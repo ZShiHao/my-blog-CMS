@@ -4,11 +4,11 @@ const client=axios.create({
     baseURL:'http://localhost:3000',
 })
 
-async function getCategory(){
-    const res=await client.get('/category')
+async function getTags(){
+    const res=await client.get('/tags')
     return res
 }
 
 export  {
-    getCategory
+    getTags
 }
