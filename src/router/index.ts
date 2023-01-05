@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import BlogManagement  from '../views/blogManagement/BlogManagement.vue'
 import AddBlog from '../views/blogManagement/AddBlog.vue'
 import SettingBlog from "../views/blogManagement/SettingBlog.vue"
+import BookManagement from '../views/BookManagement/BookManagement.vue'
+import AddBook from '../views/BookManagement/AddBook.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,6 +19,14 @@ const router = createRouter({
     {
       path:'/blog/settingBlog',
       component:SettingBlog
+    },
+    {
+      path:'/books',
+      component:BookManagement
+    },
+    {
+      path:'/books/addBook',
+      component:AddBook
     }
   ]
 })
