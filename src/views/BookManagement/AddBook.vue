@@ -3,7 +3,7 @@ import {reactive,ref,onMounted} from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import { UploadFilled,Delete, Download, Plus, ZoomIn ,ArrowRight} from '@element-plus/icons-vue'
 import {getBookCategory} from "@/apis/bookCategory";
-import {uploadBook} from "@/apis/book";
+import {uploadBook} from "@/apis/books";
 
 const router=useRouter()
 const route=useRoute()

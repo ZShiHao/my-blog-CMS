@@ -30,7 +30,7 @@ onMounted(()=>{
         </header>
         <section class="flex h-full">
           <el-menu
-              default-active="2"
+              default-active="1"
               class="el-menu-vertical-dem h-full "
           >
             <el-menu-item index="1">
