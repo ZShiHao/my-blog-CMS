@@ -30,10 +30,9 @@ onMounted(()=>{
         </header>
         <section class="flex h-full">
           <el-menu
-              default-active="1"
               class="el-menu-vertical-dem h-full "
           >
-            <el-menu-item index="1">
+            <el-menu-item index="1" @click="$router.push('/home')">
               <el-icon><House /></el-icon>
               <span>Home</span>
             </el-menu-item>

@@ -1,15 +1,27 @@
 <script setup>
-import {onMounted, ref} from 'vue'
+import {onMounted, reactive, ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import {getBooks,deleteBook,changeBookStatus,downloadBook} from "@/apis/books";
+import {getBooks,deleteBook,changeBookStatus,downloadBook,settingBook,getBook} from "@/apis/books";
 import {Delete,Edit,Download,Setting} from "@element-plus/icons-vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
+import {getBookCategory} from "@/apis/bookCategory";
+
 import moment from 'moment'
 
-const books=ref([])
-const dowloadUrl=ref('')
 const router=useRouter()
-const download=ref(null)
+
+const books=ref([]) //电子书
+const dowloadUrl=ref('') //电子书oss下载地址
+const download=ref(null) //a标签
+const dialogVisible=ref(false)
+const category=ref([]) //图书分类
+const currentRow=ref(null)
+const form=reactive({
+  category:'',
+  activeStatus:true,
+  language:0,
+}) // 需要更改的图书属性
+
 async function handleStatusChange(row){
   const res=await changeBookStatus(row)
 }
@@ -49,14 +61,32 @@ async function handleDeleteBlog(row){
 
 }
 
-function handleSettingBlog(row){
-  router.push(`/blog/settingBlog?id=${row._id}`)
+async function showSettingDialog(scope){
+  const row=scope.row
+  const res=await getBookCategory()
+  category.value=res.data
+  dialogVisible.value=true
+  currentRow.value=scope
+  form.category=row.category
+  form.activeStatus=row.activeStatus
+  form.language=row.language
+}
+
+// 提交图书的新设置的数据
+async function submitSetting(){
+  try {
+    const res=await settingBook(currentRow.value.row._id,form)
+    dialogVisible.value=false
+    books.value[currentRow.value.$index]=res.data //刷新单行数据
+    return res
+  } catch (e) {
+    return e
+  }
 }
 
 onMounted(async ()=>{
   const res=await getBooks()
   books.value=res.data
-  console.log(res)
 })
 </script>
 
@@ -107,15 +137,57 @@ onMounted(async ()=>{
           <template #default="scope">
             <a ref="download" :href="dowloadUrl" download></a>
             <el-button type="primary" :icon="Download" @click="handleDownloadBook(scope.row)" circle />
-            <el-button type="success" :icon="Setting" @click="handleSettingBlog(scope.row)" circle />
+            <el-button type="success" :icon="Setting" @click="showSettingDialog(scope)" circle />
             <el-button type="danger" :icon="Delete" @click="handleDeleteBlog(scope.row)" circle />
           </template>
         </el-table-column>
       </el-table>
     </section>
+    <el-dialog v-model="dialogVisible" title="Book Setting" width="30%" draggable>
+      <div class="form_outer">
+        <el-form ref="formRef">
+          <el-form-item label="Category : ">
+            <el-select v-model="form.category" placeholder="Select">
+              <el-option-group
+                  v-for="group in category"
+                  :key="group.name"
+                  :label="group.name"
+              >
+                <el-option
+                    v-for="item in group.keys"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                />
+              </el-option-group>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Language : ">
+            <el-select v-model="form.language" placeholder="Please select blog categoty">
+              <el-option v-for="item in [{name:'中文',value:0},{name:'英文',value:1}]" :label="item.name" :value="item.value"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Active Book: " >
+            <el-switch v-model="form.activeStatus" />
+          </el-form-item>
+        </el-form>
+      </div>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="submitSetting">
+          Confirm
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <style scoped>
+.form_outer{
+  margin: auto 100px;
+}
+
 
 </style>

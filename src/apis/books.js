@@ -20,6 +20,15 @@ async function downloadBook(id){
     }
 }
 
+async function getBook(id){
+    try {
+        const res=await client.get(path+'/book/'+id)
+        return res
+    } catch (e) {
+        return e
+    }
+}
+
 async function deleteBook(id){
     try{
      const res=await client.delete(path+'/'+id)
@@ -31,8 +40,16 @@ async function deleteBook(id){
 
 async function changeBookStatus(book){
     try {
-        console.log(book)
         const res=await client.put(path+'/status/'+book._id,{activeStatus:book.activeStatus})
+        return res
+    } catch (e) {
+        return e
+    }
+}
+
+async function settingBook(id,data){
+    try {
+        const res=await client.put(path+'/setting/'+id,data)
         return res
     } catch (e) {
         return e
@@ -55,5 +72,7 @@ export {
     getBooks,
     deleteBook,
     changeBookStatus,
-    downloadBook
+    downloadBook,
+    settingBook,
+    getBook
 }
