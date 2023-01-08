@@ -2,10 +2,9 @@
 import {onMounted, reactive, ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {getBooks,deleteBook,changeBookStatus,downloadBook,settingBook,getBook} from "@/apis/books";
-import {Delete,Edit,Download,Setting} from "@element-plus/icons-vue"
+import {Delete,Edit,Download,Setting,DocumentAdd} from "@element-plus/icons-vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
-import {getBookCategory} from "@/apis/bookCategory";
-
+import {getBookCategories} from "@/apis/bookCategory";
 import moment from 'moment'
 
 const router=useRouter()
@@ -63,7 +62,7 @@ async function handleDeleteBlog(row){
 
 async function showSettingDialog(scope){
   const row=scope.row
-  const res=await getBookCategory()
+  const res=await getBookCategories()
   category.value=res.data
   dialogVisible.value=true
   currentRow.value=scope
@@ -92,7 +91,7 @@ onMounted(async ()=>{
 
 <template>
   <div>
-    <el-button type="primary" @click="router.push('/books/addBook')">Add</el-button>
+    <el-button type="primary" :icon="DocumentAdd" @click="router.push('/books/addBook')"></el-button>
     <section>
       <el-table :data="books">
         <el-table-column fixed prop="cover" label="Cover">

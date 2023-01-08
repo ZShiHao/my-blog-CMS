@@ -1,7 +1,7 @@
 <script setup>
 import {RouterView} from 'vue-router'
 import {onMounted,ref} from 'vue'
-import {Document,House,Reading} from "@element-plus/icons-vue";
+import {Document,House,Reading,Guide} from "@element-plus/icons-vue";
 const suggestions=ref(['zhang','shi','hao'])
 const state=ref('')
 function querySearch(queryString,cb){
@@ -43,6 +43,10 @@ onMounted(()=>{
             <el-menu-item index="3" class="pr-2" @click="$router.push('/books')">
               <el-icon><Reading /></el-icon>
               <span>Books</span>
+            </el-menu-item>
+            <el-menu-item index="4" class="pr-2" @click="$router.push('/category')">
+              <el-icon><Guide /></el-icon>
+              <span>Category</span>
             </el-menu-item>
           </el-menu>
           <section class="p-8 w-full">

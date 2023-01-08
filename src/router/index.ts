@@ -5,6 +5,7 @@ import SettingBlog from "../views/BlogManagement/SettingBlog.vue"
 import BookManagement from '../views/BookManagement/BookManagement.vue'
 import AddBook from '../views/BookManagement/AddBook.vue'
 import Home from '../views/Home/Home.vue'
+import CategoryManagement from '../views/CategoryManagement/CategoryManagement.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,10 @@ const router = createRouter({
     {
       path:'/books/addBook',
       component:AddBook
+    },
+    {
+      path:'/category',
+      component:CategoryManagement
     }
   ]
 })
