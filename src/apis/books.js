@@ -2,10 +2,18 @@ import client from "@/config/api";
 
 const path='/books'
 
-async function getBooks(){
+async function getBooks(data){
     try{
-     const res=await client.get(path)
-     return res
+        let queryPath=''
+        if(data){
+            queryPath='?'
+            for (let key in data){
+                console.log(data[key])
+                queryPath=queryPath+key+'='+data[key]+'&'
+            }
+        }
+        const res=await client.get(path+queryPath)
+        return res
     }catch(e){
         return e
     }

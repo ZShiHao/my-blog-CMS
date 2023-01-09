@@ -2,12 +2,14 @@
 import {onMounted, reactive, ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {getBooks,deleteBook,changeBookStatus,downloadBook,settingBook,getBook} from "@/apis/books";
-import {Delete,Edit,Download,Setting,DocumentAdd} from "@element-plus/icons-vue"
+import {Delete,Edit,Download,Setting,DocumentAdd,Search,Refresh} from "@element-plus/icons-vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {getBookCategories} from "@/apis/bookCategory";
 import moment from 'moment'
 
 const router=useRouter()
+
+const searchText=ref('')
 
 const books=ref([]) //电子书
 const dowloadUrl=ref('') //电子书oss下载地址
@@ -20,6 +22,25 @@ const form=reactive({
   activeStatus:true,
   language:0,
 }) // 需要更改的图书属性
+
+async function searchBookByTitle(){
+  try {
+    const res=await getBooks({title:searchText.value})
+    books.value=res.data
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+async function refreshBookTable(){
+  try {
+    searchText.value=''
+    const res=await getBooks()
+    books.value=res.data
+  } catch (e) {
+    console.log(e)
+  }
+}
 
 async function handleStatusChange(row){
   const res=await changeBookStatus(row)
@@ -91,7 +112,18 @@ onMounted(async ()=>{
 
 <template>
   <div>
-    <el-button type="primary" :icon="DocumentAdd" @click="router.push('/books/addBook')"></el-button>
+    <header>
+      <el-input
+          v-model="searchText"
+          class="w-50 m-2"
+          size="large"
+          placeholder="Please Input"
+          :prefix-icon="Search"
+          @keyup.enter="searchBookByTitle"
+      />
+      <el-button type="success" :icon="Refresh" @click="refreshBookTable"></el-button>
+      <el-button type="primary" :icon="DocumentAdd" @click="router.push('/books/addBook')"></el-button>
+    </header>
     <section>
       <el-table :data="books">
         <el-table-column fixed prop="cover" label="Cover">
@@ -186,6 +218,10 @@ onMounted(async ()=>{
 <style scoped>
 .form_outer{
   margin: auto 100px;
+}
+
+.el-input{
+  width: 300px;
 }
 
 
