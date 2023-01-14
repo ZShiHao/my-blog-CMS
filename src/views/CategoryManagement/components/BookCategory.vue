@@ -13,7 +13,7 @@ const showDelete=ref(false)
 const dialogFormVisible=ref(false)
 const form=reactive({
   name:'',
-  keys:['']
+  keys:''
 })
 const formLabelWidth='140px'
 
@@ -40,7 +40,7 @@ function inputBlur(){
 
 async function deleteSubCategory(category,key,index){
   try {
-    const res=await deleteBookSubCategory(category._id,key)
+    const res=await deleteBookSubCategory(category._id,key.name)
     bookCategory.value[index]=res.data
   } catch (e) {
 
@@ -58,7 +58,7 @@ async function deleteCategory(category){
 
 async function submitNewCategory(){
   try {
-    const res=await addBookCategory({name:form.name,keys:form.keys})
+    const res=await addBookCategory({name:form.name,keys: {name:form.keys}})
     bookCategory.value=res.data
     dialogFormVisible.value=false
   } catch (e) {
@@ -96,14 +96,14 @@ onMounted(async ()=>{
       <span>{{category.name+' : '}}</span>
       <el-tag
           v-for="key in category.keys"
-          :key="key"
-          :type="key"
+          :key="key.name"
+          :type="key.name"
           class="mx-1"
           effect="plain"
           @close="deleteSubCategory(category,key,index)"
           closable
       >
-        {{ key }}
+        {{ key.name }}
       </el-tag>
       <el-input
           v-if="newSubCategoryVisible&&currentEditingCategory._id===category._id"
@@ -125,7 +125,7 @@ onMounted(async ()=>{
           <el-input v-model="form.name" autocomplete="off" />
         </el-form-item>
         <el-form-item label="Subcategory" :label-width="formLabelWidth">
-          <el-input v-model="form.keys[0]" autocomplete="off" />
+          <el-input v-model="form.keys" autocomplete="off" />
         </el-form-item>
       </el-form>
       <template #footer>

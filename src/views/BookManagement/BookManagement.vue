@@ -166,7 +166,7 @@ onMounted(async ()=>{
         <el-table-column  prop="size" label="BookSize"  />
         <el-table-column fixed="right" label="Operations" >
           <template #default="scope">
-            <a ref="download" :href="dowloadUrl" download></a>
+            <a ref="download" :href="dowloadUrl" download target="_blank"></a>
             <el-button type="primary" :icon="Download" @click="handleDownloadBook(scope.row)" circle />
             <el-button type="success" :icon="Setting" @click="showSettingDialog(scope)" circle />
             <el-button type="danger" :icon="Delete" @click="handleDeleteBlog(scope.row)" circle />
