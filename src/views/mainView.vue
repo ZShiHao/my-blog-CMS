@@ -44,7 +44,11 @@ onMounted(()=>{
               <el-icon><Reading /></el-icon>
               <span>Books</span>
             </el-menu-item>
-            <el-menu-item index="4" class="pr-2" @click="$router.push('/category')">
+            <el-menu-item index="4" class="pr-2" @click="$router.push('/pdfbooks')">
+              <el-icon><Reading /></el-icon>
+              <span>PDFDriver</span>
+            </el-menu-item>
+            <el-menu-item index="5" class="pr-2" @click="$router.push('/category')">
               <el-icon><Guide /></el-icon>
               <span>Category</span>
             </el-menu-item>
