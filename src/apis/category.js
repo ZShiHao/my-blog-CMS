@@ -5,7 +5,7 @@ const client=axios.create({
 })
 
 async function getCategory(){
-    const res=await client.get('/category')
+    const res=await client.get('/book_category')
     return res
 }
 
