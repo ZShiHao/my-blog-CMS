@@ -3,16 +3,43 @@ import {onMounted, reactive, ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {getBooks,deleteBook,changeBookStatus,downloadBook,settingBook,getBook} from "@/apis/books";
 import {getPdfBooks} from '@/apis/pdfBooks'
+import {getCategory} from '@/apis/category'
 import {Delete,Edit,Download,Setting,DocumentAdd,Search,Refresh} from "@element-plus/icons-vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {getBookCategories} from "@/apis/bookCategory";
 import moment from 'moment'
 
 const books=ref([]) //电子书
+const categories=ref([])
+
+// 当前的页面状态
+const currentPage=ref(1)
+const currentCategory=ref('')
+const totalCount=ref(0)
+
+
+async function loadNewPage(page){
+  const res=await getPdfBooks(page,'')
+  const body=res.data
+  books.value=body.data.books
+}
+
+async function getBooksByCategory(page,category){
+  currentCategory.value=category
+  const res=await getPdfBooks(page,category)
+  const body=res.data
+  books.value=body.data.books
+  totalCount.value=body.data.totalCount
+}
 
 onMounted(async ()=>{
-  const res=await getPdfBooks()
-  books.value=res.data
+  const res=await getPdfBooks(1,'')
+  const categoryRes=await getCategory()
+  const body=res.data
+  books.value=body.data.books
+  totalCount.value=body.data.totalCount
+
+  categories.value=categoryRes.data.data.categories
 })
 </script>
 
@@ -32,14 +59,24 @@ onMounted(async ()=>{
 <!--      <el-button type="success" :icon="Refresh" @click="refreshBookTable"></el-button>-->
 <!--    </header>-->
     <section>
+      <div style="padding-top: 5px" v-for="category in categories">
+        <span style="display: inline-block;width: 100px">{{category.name}} :</span>
+        <div style="display: inline-block">
+          <span  class="subcategory" v-for="subcategory in category.keys" @click="getBooksByCategory(1,subcategory.name)">
+            {{subcategory.name}}
+          </span>
+        </div>
+      </div>
+    </section>
+    <section>
       <el-table :data="books">
         <el-table-column fixed prop="cover" label="Cover">
           <template #default="scope">
             <img :src="scope.row.coverUrl" style="width: 112px;height: 148px" alt="cover">
           </template>
         </el-table-column>
-        <el-table-column  prop="title" label="Title"  />
-        <el-table-column prop="published" label="Published" >
+        <el-table-column  prop="title" label="Title" width="200" />
+        <el-table-column prop="published" label="Published" width="100" >
         </el-table-column>
         <el-table-column prop="activeStatus" label="ActiveStatus" width="130">
           <template #default="scope">
@@ -64,7 +101,7 @@ onMounted(async ()=>{
         <el-table-column  prop="downloads" label="Downloads"  />
         <el-table-column  prop="pages" label="Pages">
           <template #default="scope">
-            {{scope.row.pages+'页'}}
+            {{scope.row.pages?scope.row.pages:' - '+'Pages'}}
           </template>
         </el-table-column>
         <el-table-column  prop="size" label="BookSize"  />
@@ -78,6 +115,13 @@ onMounted(async ()=>{
 <!--          </template>-->
 <!--        </el-table-column>-->
       </el-table>
+      <el-pagination
+          :page-size="20"
+          :pager-count="11"
+          layout="prev, pager, next"
+          :total="totalCount"
+          @current-change="loadNewPage"
+      />
     </section>
 <!--    <el-dialog v-model="dialogVisible" title="Book Setting" width="30%" draggable>-->
 <!--      <div class="form_outer">-->
@@ -123,5 +167,10 @@ onMounted(async ()=>{
 
 
 <style scoped>
-
+.subcategory{
+  cursor: pointer;
+  color: cornflowerblue;
+  padding: 0 15px;
+  /*border-right: 0.5px solid black;*/
+}
 </style>
