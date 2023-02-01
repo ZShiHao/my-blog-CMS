@@ -17,6 +17,16 @@ async function getPdfBooks(page,category){
     }
 }
 
+async function uploadPdfBook(id){
+    try {
+        const res=await client.put(path+'/upload/'+`${id}`)
+        return res
+    } catch (e) {
+        return e
+    }
+}
+
 export {
-    getPdfBooks
+    getPdfBooks,
+    uploadPdfBook
 }

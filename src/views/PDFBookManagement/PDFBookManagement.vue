@@ -1,10 +1,10 @@
 <script setup>
 import {onMounted, reactive, ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import {getBooks,deleteBook,changeBookStatus,downloadBook,settingBook,getBook} from "@/apis/books";
-import {getPdfBooks} from '@/apis/pdfBooks'
+import {getBooks, deleteBook, changeBookStatus, downloadBook, settingBook, getBook, uploadBook} from "@/apis/books";
+import {getPdfBooks,uploadPdfBook} from '@/apis/pdfBooks'
 import {getCategory} from '@/apis/category'
-import {Delete,Edit,Download,Setting,DocumentAdd,Search,Refresh} from "@element-plus/icons-vue"
+import {Delete,Edit,Download,Setting,DocumentAdd,Search,Refresh,Upload} from "@element-plus/icons-vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {getBookCategories} from "@/apis/bookCategory";
 import moment from 'moment'
@@ -17,6 +17,14 @@ const currentPage=ref(1)
 const currentCategory=ref('')
 const totalCount=ref(0)
 
+
+async function handleUploadBook(book){
+  try {
+    const res=await uploadPdfBook(book.id)
+  } catch (e) {
+
+  }
+}
 
 async function loadNewPage(page){
   const res=await getPdfBooks(page,'')
@@ -105,15 +113,15 @@ onMounted(async ()=>{
           </template>
         </el-table-column>
         <el-table-column  prop="size" label="BookSize"  />
-        <el-table-column  prop="uploaded" label="Uploaded"  />
-<!--        <el-table-column fixed="right" label="Operations" >-->
-<!--          <template #default="scope">-->
-<!--            <a ref="download" :href="dowloadUrl" download target="_blank"></a>-->
-<!--            <el-button type="primary" :icon="Download" @click="handleDownloadBook(scope.row)" circle />-->
-<!--            <el-button type="success" :icon="Setting" @click="showSettingDialog(scope)" circle />-->
-<!--            <el-button type="danger" :icon="Delete" @click="handleDeleteBlog(scope.row)" circle />-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+<!--        <el-table-column  prop="uploaded" label="Uploaded"  />-->
+        <el-table-column fixed="right" label="Operations" >
+          <template #default="scope">
+            <a ref="download" :href="dowloadUrl" download target="_blank"></a>
+            <el-button type="primary" :icon="Download" @click="handleDownloadBook(scope.row)" circle />
+            <el-button type="success" :icon="Upload" @click="handleUploadBook(scope.row)" circle />
+            <el-button type="danger" :icon="Delete" @click="handleDeleteBlog(scope.row)" circle />
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination
           :page-size="20"
