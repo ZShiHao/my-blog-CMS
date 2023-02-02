@@ -2,7 +2,7 @@
 import {onMounted, reactive, ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {getBooks, deleteBook, changeBookStatus, downloadBook, settingBook, getBook, uploadBook} from "@/apis/books";
-import {getPdfBooks,uploadPdfBook} from '@/apis/pdfBooks'
+import {getPdfBooks,uploadPdfBook,updateBookStatus} from '@/apis/pdfBooks'
 import {getCategory} from '@/apis/category'
 import {Delete,Edit,Download,Setting,DocumentAdd,Search,Refresh,Upload} from "@element-plus/icons-vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -21,6 +21,22 @@ const totalCount=ref(0)
 async function handleUploadBook(book){
   try {
     const res=await uploadPdfBook(book.id)
+    if (res.data.code===200){
+      const {data}=await getBooksByCategory(currentPage.value,currentCategory.value)
+      books.value=data.data.books
+    }
+  } catch (e) {
+
+  }
+}
+
+async function handleStatusChange(book){
+  try {
+    const res=await updateBookStatus(book.id)
+    if (res.data.code===200){
+      const {data}=await getBooksByCategory(currentPage.value,currentCategory.value)
+      books.value=data.data.books
+    }
   } catch (e) {
 
   }
@@ -117,9 +133,9 @@ onMounted(async ()=>{
         <el-table-column fixed="right" label="Operations" >
           <template #default="scope">
             <a ref="download" :href="dowloadUrl" download target="_blank"></a>
-            <el-button type="primary" :icon="Download" @click="handleDownloadBook(scope.row)" circle />
-            <el-button type="success" :icon="Upload" @click="handleUploadBook(scope.row)" circle />
-            <el-button type="danger" :icon="Delete" @click="handleDeleteBlog(scope.row)" circle />
+<!--            <el-button type="primary" :icon="Download" @click="handleDownloadBook(scope.row)" circle />-->
+            <el-button type="success" :disabled="scope.row.uploaded" :icon="Upload" @click="handleUploadBook(scope.row)" circle />
+<!--            <el-button type="danger" :icon="Delete" @click="handleDeleteBlog(scope.row)" circle />-->
           </template>
         </el-table-column>
       </el-table>

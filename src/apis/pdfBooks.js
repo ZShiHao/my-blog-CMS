@@ -26,7 +26,17 @@ async function uploadPdfBook(id){
     }
 }
 
+async function updateBookStatus(id){
+    try {
+        const res=await client.post(path+'/status/'+`${id}`)
+        return res
+    } catch (e) {
+        return e
+    }
+}
+
 export {
     getPdfBooks,
-    uploadPdfBook
+    uploadPdfBook,
+    updateBookStatus
 }
