@@ -6,6 +6,8 @@ import {getCategory} from '@/apis/category'
 import {Delete,Edit,Download,Setting,DocumentAdd,Search,Refresh,Upload} from "@element-plus/icons-vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
 import UploadButton from './Components/UploadButton.vue'
+import DownloadButton from './Components/DownloadButton.vue'
+
 import {getBookCategories} from "@/apis/bookCategory";
 import moment from 'moment'
 
@@ -153,8 +155,7 @@ onMounted(async ()=>{
 <!--        <el-table-column  prop="uploaded" label="Uploaded"  />-->
         <el-table-column fixed="right" label="Operations" >
           <template #default="scope">
-            <a ref="download" :href="dowloadUrl" download target="_blank"></a>
-<!--            <el-button type="primary" :icon="Download" @click="handleDownloadBook(scope.row)" circle />-->
+            <DownloadButton :book="scope.row"/>
             <UploadButton :book="scope.row" v-model:uploaded="scope.row.uploaded" />
             <el-button type="danger" :icon="Delete" @click="handleDeleteBook(scope.row)" circle />
           </template>
