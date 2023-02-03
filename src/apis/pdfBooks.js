@@ -18,12 +18,8 @@ async function getPdfBooks(page,category){
 }
 
 async function uploadPdfBook(id){
-    try {
         const res=await client.put(path+'/upload/'+`${id}`)
         return res
-    } catch (e) {
-        return e
-    }
 }
 
 async function updateBookStatus(id){
@@ -35,8 +31,15 @@ async function updateBookStatus(id){
     }
 }
 
+async function deleteBook(id){
+        const res=await client.delete(path+'/'+id)
+        return res
+}
+
 export {
     getPdfBooks,
     uploadPdfBook,
-    updateBookStatus
+    updateBookStatus,
+    deleteBook
+
 }
