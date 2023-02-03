@@ -1,6 +1,6 @@
 <script setup>
 import {Download} from "@element-plus/icons-vue"
-import {ref} from "vue";
+import {ref,nextTick} from "vue";
 import {getBookDownloadUrl} from "@/apis/pdfBooks";
 import {ElMessage} from "element-plus";
 
@@ -18,6 +18,7 @@ async function handleDownloadBook(){
     if(data.code===200){
       url.value=data.data.url
       loading.value=false
+      await nextTick()
       download.value.click()
     }else {
       loading.value=false
