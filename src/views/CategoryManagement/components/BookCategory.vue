@@ -80,7 +80,7 @@ async function submitNewSubCategory(index){
 
 onMounted(async ()=>{
   const bookCateRes=await getBookCategories()
-  bookCategory.value=bookCateRes.data
+  bookCategory.value=bookCateRes.data.data.categories
 
 })
 </script>

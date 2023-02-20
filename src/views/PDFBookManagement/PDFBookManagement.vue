@@ -12,7 +12,8 @@ import {getBookCategories} from "@/apis/bookCategory";
 import moment from 'moment'
 
 const books=ref([]) //电子书
-const categories=ref([])
+const categories = ref([])
+const selectionRows=ref([])
 
 // 当前的页面状态
 const currentPage=ref(1)
@@ -20,7 +21,10 @@ const currentCategory=ref('')
 const totalCount=ref(0)
 
 
-
+async function handleSelectionChange(row) {
+ selectionRows.value.push(row)
+ console.log(selectionRows.value);
+}
 
 async function handleStatusChange(book){
   try {
@@ -65,6 +69,21 @@ async function handleDeleteBook(book){
   }
 }
 
+async function batchUpload(){
+  try {
+    if(selectionRows.value.length!==0){
+
+    }else {
+      ElMessage({
+        type:'warning',
+        message:'请选择至少一本书上传'
+      })
+    }
+  } catch (e) {
+
+  }
+}
+
 async function loadNewPage(page){
   const res=await getPdfBooks(page,'')
   const body=res.data
@@ -73,7 +92,7 @@ async function loadNewPage(page){
 
 async function getBooksByCategory(page,category){
   currentCategory.value=category
-  const res=await getPdfBooks(page,category)
+  const res=await getPdfBooks(page,category )
   const body=res.data
   books.value=body.data.books
   totalCount.value=body.data.totalCount
@@ -106,24 +125,28 @@ onMounted(async ()=>{
 <!--      <el-button type="success" :icon="Refresh" @click="refreshBookTable"></el-button>-->
 <!--    </header>-->
     <section>
-      <div style="padding-top: 5px" v-for="category in categories">
+      <div style="padding-top: 5px" v-for="(category,index) in categories" :key="index">
         <span style="display: inline-block;width: 100px">{{category.name}} :</span>
         <div style="display: inline-block">
-          <span  class="subcategory" v-for="subcategory in category.keys" @click="getBooksByCategory(1,subcategory.name)">
+          <span  class="subcategory" v-for="(subcategory,index) in category.keys" :key="index" @click="getBooksByCategory(1,subcategory.name)">
             {{subcategory.name}}
           </span>
         </div>
       </div>
     </section>
+    <section style="margin:20px 0px">
+      <el-button type="primary" disabled @click="batchUpload">Batch Upload</el-button>
+    </section>
     <section>
-      <el-table :data="books">
+      <el-table :data="books" @selection-change="handleSelectionChange">
+        <el-table-column :selectable="row=>!row.uploaded" type="selection" width="55" />
         <el-table-column fixed prop="cover" label="Cover">
           <template #default="scope">
             <img :src="scope.row.coverUrl" style="width: 112px;height: 148px" alt="cover">
           </template>
         </el-table-column>
         <el-table-column  prop="title" label="Title" width="200" />
-        <el-table-column prop="published" label="Published" width="100" >
+        <el-table-column sortable prop="published" label="Published" width="110" >
         </el-table-column>
         <el-table-column prop="activeStatus" label="ActiveStatus" width="130">
           <template #default="scope">
@@ -151,8 +174,7 @@ onMounted(async ()=>{
             {{scope.row.pages?scope.row.pages:' - '+'Pages'}}
           </template>
         </el-table-column>
-        <el-table-column  prop="size" label="BookSize"  />
-<!--        <el-table-column  prop="uploaded" label="Uploaded"  />-->
+        <el-table-column sortable :sort-method="(a,b)=>parseFloat(a)-parseFloat(b)" prop="size" label="BookSize"  />
         <el-table-column fixed="right" label="Operations" >
           <template #default="scope">
             <DownloadButton :book="scope.row"/>
