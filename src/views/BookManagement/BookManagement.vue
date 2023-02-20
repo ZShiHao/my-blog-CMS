@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, reactive, ref} from 'vue'
+import {nextTick, onMounted, reactive, ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {getBooks,deleteBook,changeBookStatus,downloadBook,settingBook,getBook} from "@/apis/books";
 import {Delete,Edit,Download,Setting,DocumentAdd,Search,Refresh} from "@element-plus/icons-vue"
@@ -50,6 +50,7 @@ async function handleDownloadBook(row){
   try {
     const res=await downloadBook(row._id)
     dowloadUrl.value=res.data
+    await nextTick()
     download.value.click()
   } catch (e) {
     return e
@@ -166,7 +167,7 @@ onMounted(async ()=>{
         <el-table-column  prop="size" label="BookSize"  />
         <el-table-column fixed="right" label="Operations" >
           <template #default="scope">
-            <a ref="download" :href="dowloadUrl" download target="_blank"></a>
+            <a ref="download" :href="dowloadUrl" download target="_self"></a>
             <el-button type="primary" :icon="Download" @click="handleDownloadBook(scope.row)" circle />
             <el-button type="success" :icon="Setting" @click="showSettingDialog(scope)" circle />
             <el-button type="danger" :icon="Delete" @click="handleDeleteBlog(scope.row)" circle />
