@@ -40,7 +40,7 @@ function inputBlur(){
 
 async function deleteSubCategory(category,key,index){
   try {
-    const res=await deleteBookSubCategory(category._id,key.name)
+    const res=await deleteBookSubCategory(1,category._id,key.name)
     bookCategory.value[index]=res.data
   } catch (e) {
 
@@ -49,7 +49,7 @@ async function deleteSubCategory(category,key,index){
 
 async function deleteCategory(category){
   try {
-    const res=await deleteBookCategory(category._id)
+    const res=await deleteBookCategory(1,category._id)
     bookCategory.value=res.data
   } catch (e) {
 
@@ -58,7 +58,7 @@ async function deleteCategory(category){
 
 async function submitNewCategory(){
   try {
-    const res=await addBookCategory({name:form.name,keys: {name:form.keys}})
+    const res=await addBookCategory(1,{name:form.name,keys: {name:form.keys}})
     bookCategory.value=res.data
     dialogFormVisible.value=false
   } catch (e) {
@@ -68,7 +68,7 @@ async function submitNewCategory(){
 
 async function submitNewSubCategory(index){
   try {
-    const res=await addBookSubCategory(currentEditingCategory.value._id,newSubCategory.value)
+    const res=await addBookSubCategory(1,currentEditingCategory.value._id,newSubCategory.value)
     bookCategory.value[index]=res.data
   } catch (e) {
 
@@ -79,7 +79,7 @@ async function submitNewSubCategory(index){
 }
 
 onMounted(async ()=>{
-  const bookCateRes=await getBookCategories()
+  const bookCateRes=await getBookCategories(1)
   bookCategory.value=bookCateRes.data.data.categories
 
 })

@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted,ref} from "vue";
 import {getBookCategories,addBookSubCategory} from "@/apis/bookCategory";
-import BookCategory from './components/BookCategory.vue'
+import PDFBookCategory from './components/PDFBookCategory.vue'
 
 
 onMounted(async ()=>{
@@ -19,7 +19,7 @@ onMounted(async ()=>{
       <el-divider />
     </section>
 
-    <BookCategory />
+    <PDFBookCategory />
   </div>
 </template>
 
