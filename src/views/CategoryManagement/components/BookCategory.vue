@@ -5,6 +5,8 @@ import {Delete,Plus} from '@element-plus/icons-vue'
 
 //TODO:分析多个同名ref时,vue是如何处理的
 
+const props=defineProps(['categoryType','title'])
+
 const InputRef=ref(null) //数组
 const bookCategory=ref([])
 
@@ -40,7 +42,7 @@ function inputBlur(){
 
 async function deleteSubCategory(category,key,index){
   try {
-    const res=await deleteBookSubCategory(category._id,key.name)
+    const res=await deleteBookSubCategory(props.categoryType,category._id,key.name)
     bookCategory.value[index]=res.data
   } catch (e) {
 
@@ -49,7 +51,7 @@ async function deleteSubCategory(category,key,index){
 
 async function deleteCategory(category){
   try {
-    const res=await deleteBookCategory(category._id)
+    const res=await deleteBookCategory(props.categoryType,category._id)
     bookCategory.value=res.data
   } catch (e) {
 
@@ -58,7 +60,7 @@ async function deleteCategory(category){
 
 async function submitNewCategory(){
   try {
-    const res=await addBookCategory({name:form.name,keys: {name:form.keys}})
+    const res=await addBookCategory(props.categoryType,{name:form.name,keys: {name:form.keys}})
     bookCategory.value=res.data
     dialogFormVisible.value=false
   } catch (e) {
@@ -68,7 +70,7 @@ async function submitNewCategory(){
 
 async function submitNewSubCategory(index){
   try {
-    const res=await addBookSubCategory(currentEditingCategory.value._id,newSubCategory.value)
+    const res=await addBookSubCategory(props.categoryType,currentEditingCategory.value._id,newSubCategory.value)
     bookCategory.value[index]=res.data
   } catch (e) {
 
@@ -79,16 +81,16 @@ async function submitNewSubCategory(index){
 }
 
 onMounted(async ()=>{
-  const bookCateRes=await getBookCategories()
-  bookCategory.value=bookCateRes.data
-
+  const bookCateRes=await getBookCategories(props.categoryType)
+  bookCategory.value=bookCateRes.data.data.categories
 })
 </script>
 
 <template>
   <section>
-    <h1 class="font-bold">
-      Book Category
+     <el-divider />
+     <h1 class="font-bold">
+       {{title}}
     </h1>
     <el-divider />
     <el-button type="primary" :icon="Plus" @click="dialogFormVisible=true"></el-button>
@@ -97,7 +99,6 @@ onMounted(async ()=>{
       <el-tag
           v-for="key in category.keys"
           :key="key.name"
-          :type="key.name"
           class="mx-1"
           effect="plain"
           @close="deleteSubCategory(category,key,index)"

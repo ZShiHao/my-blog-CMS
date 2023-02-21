@@ -18,8 +18,8 @@ onMounted(async ()=>{
       </h1>
       <el-divider />
     </section>
-
-    <BookCategory />
+     <BookCategory :categoryType="0" title="Book Category" />
+    <BookCategory :categoryType="1" title="PDF Category" />
   </div>
 </template>
 
