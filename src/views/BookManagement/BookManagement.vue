@@ -148,7 +148,6 @@ onMounted(async ()=>{
           <template #default="scope">
             <el-tag
                 :key="scope.row.category"
-                :type="scope.row.category"
                 class="mx-1"
                 effect="light"
                 round
