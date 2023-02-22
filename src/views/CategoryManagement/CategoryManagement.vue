@@ -12,12 +12,12 @@ onMounted(async ()=>{
 
 <template>
   <div>
-    <section>
-      <h1 class="font-bold">
-        Blog Category
-      </h1>
-      <el-divider />
-    </section>
+<!--    <section>-->
+<!--      <h1 class="font-bold">-->
+<!--        Blog Category-->
+<!--      </h1>-->
+<!--      <el-divider />-->
+<!--    </section>-->
      <BookCategory :categoryType="0" title="Book Category" />
     <BookCategory :categoryType="1" title="PDF Category" />
   </div>

@@ -2,7 +2,7 @@
 import {reactive,ref,onMounted} from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import { UploadFilled,Delete, Download, Plus, ZoomIn ,ArrowRight} from '@element-plus/icons-vue'
-import {getBookCategory} from "@/apis/bookCategory";
+import {getBookCategories, getBookCategory} from "@/apis/bookCategory";
 import {uploadBook} from "@/apis/books";
 
 const router=useRouter()
@@ -38,9 +38,8 @@ async function submitForm(formRef){
 
 
 onMounted(async ()=>{
-  const res=await getBookCategory()
-  console.log(res)
-  category.value=res.data
+  const res=await getBookCategories(0)
+  category.value=res.data.data.categories
 })
 
 </script>
@@ -61,9 +60,9 @@ onMounted(async ()=>{
           >
             <el-option
                 v-for="item in group.keys"
-                :key="item"
-                :label="item"
-                :value="item"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
             />
           </el-option-group>
         </el-select>
