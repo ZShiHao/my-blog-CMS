@@ -7,6 +7,7 @@ import {Delete,Plus} from '@element-plus/icons-vue'
 
 const props=defineProps(['categoryType','title'])
 
+const loading=ref(true)
 const InputRef=ref(null) //数组
 const bookCategory=ref([])
 
@@ -83,6 +84,7 @@ async function submitNewSubCategory(index){
 onMounted(async ()=>{
   const bookCateRes=await getBookCategories(props.categoryType)
   bookCategory.value=bookCateRes.data.data.categories
+   loading.value=false
 })
 </script>
 
@@ -94,32 +96,36 @@ onMounted(async ()=>{
     </h1>
     <el-divider />
     <el-button type="primary" :icon="Plus" @click="dialogFormVisible=true"></el-button>
-    <div class="categoryBox" v-for="(category,index) in bookCategory" @pointerleave="currentEditingCategory={}" @pointerenter="currentEditingCategory=category">
-      <span>{{category.name+' : '}}</span>
-      <el-tag
-          v-for="key in category.keys"
-          :key="key.name"
-          class="mx-1"
-          effect="plain"
-          @close="deleteSubCategory(category,key,index)"
-          closable
-      >
-        {{ key.name }}
-      </el-tag>
-      <el-input
-          v-if="newSubCategoryVisible&&currentEditingCategory._id===category._id"
-          ref="InputRef"
-          v-model="newSubCategory"
-          class="ml-1 w-20"
-          size="small"
-          @keyup.enter="submitNewSubCategory(index)"
-          @blur="inputBlur"
-      />
-      <el-button v-else class="button-new-tag ml-1" size="small" @click="showSubCategoryInput(category)">
-        + New SubCategory
-      </el-button>
-      <el-button type="danger" size="small" v-show="currentEditingCategory._id===category._id" :icon="Delete" @click="deleteCategory(category)"></el-button>
-    </div>
+     <div v-loading="loading">
+        <div class="categoryBox" v-for="(category,index) in bookCategory" @pointerleave="currentEditingCategory={}" @pointerenter="currentEditingCategory=category">
+           <span>{{category.name+' : '}}</span>
+           <el-tag
+               v-loading
+               v-for="key in category.keys"
+               :key="key.name"
+               class="mx-1"
+               effect="plain"
+               @close="deleteSubCategory(category,key,index)"
+               closable
+           >
+              {{ key.name }}
+           </el-tag>
+           <el-input
+               v-if="newSubCategoryVisible&&currentEditingCategory._id===category._id"
+               ref="InputRef"
+               v-model="newSubCategory"
+               class="ml-1 w-20"
+               size="small"
+               @keyup.enter="submitNewSubCategory(index)"
+               @blur="inputBlur"
+           />
+           <el-button v-else class="button-new-tag ml-1" size="small" @click="showSubCategoryInput(category)">
+              + New SubCategory
+           </el-button>
+           <el-button type="danger" size="small" v-show="currentEditingCategory._id===category._id" :icon="Delete" @click="deleteCategory(category)"></el-button>
+        </div>
+
+     </div>
     <el-dialog v-model="dialogFormVisible" title="Add Category">
       <el-form :model="form">
         <el-form-item label="Category" :label-width="formLabelWidth">

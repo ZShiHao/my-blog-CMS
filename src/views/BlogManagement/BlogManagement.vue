@@ -5,8 +5,10 @@ import {getBlogList,updateBlogStatus,deleteBlog} from "@/apis/blogs";
 import {Delete,Edit,Check,Setting} from "@element-plus/icons-vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
 
+const loading=ref(true)
 const blogList=ref([])
 const router=useRouter()
+
 async function handleStatusChange(row){
   const res=await updateBlogStatus({_id:row._id,activeStatus:row.activeStatus})
 }
@@ -43,6 +45,7 @@ function handleSettingBlog(row){
 onMounted(async ()=>{
   const res=await getBlogList()
   blogList.value=res.data
+   loading.value=false
 })
 </script>
 
@@ -50,7 +53,7 @@ onMounted(async ()=>{
     <div>
       <el-button type="primary" @click="router.push('/blog/addBlog')">Add</el-button>
       <section>
-        <el-table :data="blogList">
+        <el-table v-loading="loading" :data="blogList">
           <el-table-column fixed prop="title" label="Title"  />
           <el-table-column prop="cover" label="Cover">
             <template #default="scope">

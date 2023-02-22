@@ -11,6 +11,7 @@ const router=useRouter()
 
 const searchText=ref('')
 
+const loading=ref(true)
 const books=ref([]) //电子书
 const dowloadUrl=ref('') //电子书oss下载地址
 const download=ref(null) //a标签
@@ -108,6 +109,7 @@ async function submitSetting(){
 onMounted(async ()=>{
   const res=await getBooks()
   books.value=res.data
+   loading.value=false
 })
 </script>
 
@@ -126,7 +128,7 @@ onMounted(async ()=>{
       <el-button type="primary" :icon="DocumentAdd" @click="router.push('/books/addBook')"></el-button>
     </header>
     <section>
-      <el-table :data="books">
+      <el-table v-loading="loading" :data="books">
         <el-table-column fixed prop="cover" label="Cover">
           <template #default="scope">
             <img :src="scope.row.cover" style="width: 112px;height: 148px" alt="cover">
