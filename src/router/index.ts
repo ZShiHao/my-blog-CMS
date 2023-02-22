@@ -3,7 +3,7 @@ import BlogManagement  from '../views/BlogManagement/BlogManagement.vue'
 import AddBlog from '../views/BlogManagement/AddBlog.vue'
 import SettingBlog from "../views/BlogManagement/SettingBlog.vue"
 import BookManagement from '../views/BookManagement/BookManagement.vue'
-import AddBook from '../views/BookManagement/AddBook.vue'
+import AddBook from '../views/BookManagement/components/AddBook.vue'
 import Home from '../views/Home/Home.vue'
 import CategoryManagement from '../views/CategoryManagement/CategoryManagement.vue'
 import PDFBookManagement from  '../views/PDFBookManagement/PDFBookManagement.vue'

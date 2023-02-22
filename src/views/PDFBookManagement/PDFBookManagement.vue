@@ -19,6 +19,7 @@ const selectionRows=ref([])
 const currentPage=ref(1)
 const currentCategory=ref('')
 const totalCount=ref(0)
+const loading=ref(true)
 
 
 async function handleSelectionChange(row) {
@@ -85,9 +86,11 @@ async function batchUpload(){
 }
 
 async function loadNewPage(page){
+   loading.value=true
   const res=await getPdfBooks(page,'')
   const body=res.data
   books.value=body.data.books
+   loading.value=false
 }
 
 async function getBooksByCategory(page,category){
@@ -106,13 +109,14 @@ onMounted(async ()=>{
   totalCount.value=body.data.totalCount
 
   categories.value=categoryRes.data.data.categories
+   loading.value=false
 })
 </script>
 
 
 
 <template>
-  <div>
+  <div >
 <!--    <header>-->
 <!--      <el-input-->
 <!--          v-model="searchText"-->
@@ -138,7 +142,7 @@ onMounted(async ()=>{
       <el-button type="primary" disabled @click="batchUpload">Batch Upload</el-button>
     </section>
     <section>
-      <el-table :data="books" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="books" @selection-change="handleSelectionChange">
         <el-table-column :selectable="row=>!row.uploaded" type="selection" width="55" />
         <el-table-column fixed prop="cover" label="Cover">
           <template #default="scope">

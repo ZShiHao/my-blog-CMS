@@ -11,6 +11,7 @@ const router=useRouter()
 
 const searchText=ref('')
 
+const loading=ref(true)
 const books=ref([]) //电子书
 const dowloadUrl=ref('') //电子书oss下载地址
 const download=ref(null) //a标签
@@ -26,7 +27,7 @@ const form=reactive({
 async function searchBookByTitle(){
   try {
     const res=await getBooks({title:searchText.value})
-    books.value=res.data
+    books.value=res.data.data
   } catch (e) {
     console.log(e)
   }
@@ -36,7 +37,7 @@ async function refreshBookTable(){
   try {
     searchText.value=''
     const res=await getBooks()
-    books.value=res.data
+    books.value=res.data.data
   } catch (e) {
     console.log(e)
   }
@@ -49,7 +50,7 @@ async function handleStatusChange(row){
 async function handleDownloadBook(row){
   try {
     const res=await downloadBook(row._id)
-    dowloadUrl.value=res.data
+    dowloadUrl.value=res.data.data
     await nextTick()
     download.value.click()
   } catch (e) {
@@ -75,7 +76,7 @@ async function handleDeleteBlog(row){
       message: 'Delete completed',
     })
     const res=await getBooks()
-    books.value=res.data
+    books.value=res.data.data
 
   }catch (e) {
   }
@@ -84,8 +85,8 @@ async function handleDeleteBlog(row){
 
 async function showSettingDialog(scope){
   const row=scope.row
-  const res=await getBookCategories()
-  category.value=res.data
+  const res=await getBookCategories(0)
+  category.value=res.data.data.categories
   dialogVisible.value=true
   currentRow.value=scope
   form.category=row.category
@@ -98,7 +99,7 @@ async function submitSetting(){
   try {
     const res=await settingBook(currentRow.value.row._id,form)
     dialogVisible.value=false
-    books.value[currentRow.value.$index]=res.data //刷新单行数据
+    books.value[currentRow.value.$index]=res.data.data //刷新单行数据
     return res
   } catch (e) {
     return e
@@ -107,7 +108,8 @@ async function submitSetting(){
 
 onMounted(async ()=>{
   const res=await getBooks()
-  books.value=res.data
+  books.value=res.data.data
+   loading.value=false
 })
 </script>
 
@@ -126,7 +128,7 @@ onMounted(async ()=>{
       <el-button type="primary" :icon="DocumentAdd" @click="router.push('/books/addBook')"></el-button>
     </header>
     <section>
-      <el-table :data="books">
+      <el-table v-loading="loading" :data="books">
         <el-table-column fixed prop="cover" label="Cover">
           <template #default="scope">
             <img :src="scope.row.cover" style="width: 112px;height: 148px" alt="cover">
@@ -186,9 +188,9 @@ onMounted(async ()=>{
               >
                 <el-option
                     v-for="item in group.keys"
-                    :key="item"
-                    :label="item"
-                    :value="item"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name"
                 />
               </el-option-group>
             </el-select>
