@@ -16,6 +16,7 @@ const categories = ref([])
 const selectionRows=ref([])
 
 // 当前的页面状态
+const pageSize=ref(10)
 const currentPage=ref(1)
 const currentCategory=ref('')
 const totalCount=ref(0)
@@ -87,7 +88,7 @@ async function batchUpload(){
 
 async function loadNewPage(page){
    loading.value=true
-  const res=await getPdfBooks(page,'')
+  const res=await getPdfBooks(page,pageSize.value,'')
   const body=res.data
   books.value=body.data.books
    loading.value=false
@@ -95,14 +96,14 @@ async function loadNewPage(page){
 
 async function getBooksByCategory(page,category){
   currentCategory.value=category
-  const res=await getPdfBooks(page,category )
+  const res=await getPdfBooks(page,pageSize.value,category )
   const body=res.data
   books.value=body.data.books
   totalCount.value=body.data.totalCount
 }
 
 onMounted(async ()=>{
-  const res=await getPdfBooks(1,'')
+  const res=await getPdfBooks(1,pageSize.value,'')
   const categoryRes=await getBookCategories(1)
   const body=res.data
   books.value=body.data.books
@@ -128,21 +129,21 @@ onMounted(async ()=>{
 <!--      />-->
 <!--      <el-button type="success" :icon="Refresh" @click="refreshBookTable"></el-button>-->
 <!--    </header>-->
-    <section>
-      <div style="padding-top: 5px" v-for="(category,index) in categories" :key="index">
-        <span style="display: inline-block;width: 100px">{{category.name}} :</span>
-        <div style="display: inline-block">
-          <span  class="subcategory" v-for="(subcategory,index) in category.keys" :key="index" @click="getBooksByCategory(1,subcategory.name)">
-            {{subcategory.name}}
-          </span>
-        </div>
-      </div>
-    </section>
+<!--    <section>-->
+<!--      <div style="padding-top: 5px" v-for="(category,index) in categories" :key="index">-->
+<!--        <span style="display: inline-block;width: 100px">{{category.name}} :</span>-->
+<!--        <div style="display: inline-block">-->
+<!--          <span  class="subcategory" v-for="(subcategory,index) in category.keys" :key="index" @click="getBooksByCategory(1,subcategory.name)">-->
+<!--            {{subcategory.name}}-->
+<!--          </span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </section>-->
     <section style="margin:20px 0px">
       <el-button type="primary" disabled @click="batchUpload">Batch Upload</el-button>
     </section>
     <section>
-      <el-table v-loading="loading" :data="books" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" height="700" :data="books" @selection-change="handleSelectionChange">
         <el-table-column :selectable="row=>!row.uploaded" type="selection" width="55" />
         <el-table-column fixed prop="cover" label="Cover">
           <template #default="scope">
@@ -186,13 +187,15 @@ onMounted(async ()=>{
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-          :page-size="20"
-          :pager-count="11"
-          layout="prev, pager, next"
-          :total="totalCount"
-          @current-change="loadNewPage"
-      />
+       <footer class="pagination">
+          <el-pagination
+              :page-size="pageSize"
+              :pager-count="11"
+              layout="prev, pager, next"
+              :total="totalCount"
+              @current-change="loadNewPage"
+          />
+       </footer>
     </section>
 <!--    <el-dialog v-model="dialogVisible" title="Book Setting" width="30%" draggable>-->
 <!--      <div class="form_outer">-->
@@ -244,4 +247,10 @@ onMounted(async ()=>{
   padding: 0 15px;
   /*border-right: 0.5px solid black;*/
 }
+.pagination{
+   display: flex;
+   justify-content: center;
+   padding-top: 20px;
+}
+
 </style>

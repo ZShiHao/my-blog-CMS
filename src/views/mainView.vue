@@ -28,9 +28,9 @@ onMounted(()=>{
             </template>
           </el-autocomplete>
         </header>
-        <section class="flex h-full">
+        <section class="flex h-full main">
           <el-menu
-              class="el-menu-vertical-dem h-full "
+              class="el-menu-vertical-dem h-full menu"
           >
             <el-menu-item index="1" @click="$router.push('/home')">
               <el-icon><House /></el-icon>
@@ -53,15 +53,28 @@ onMounted(()=>{
               <span>Category</span>
             </el-menu-item>
           </el-menu>
-          <section class="p-8 w-full">
+          <section class="p-8 w-full content">
             <router-view></router-view>
           </section>
         </section>
     </div>
 </template>
 
-<style scoped>
+<style   scoped>
 .header{
   border-bottom: 1px solid rgba(60, 60, 60, 0.12);
+   width: 100%;
+   position: fixed;
+   z-index: 99;
+}
+.main{
+   padding-top: 57px;
+   .menu{
+      position: fixed;
+      z-index: 80;
+   }
+   .content{
+      padding-left: 150px;
+   }
 }
 </style>

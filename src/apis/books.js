@@ -2,7 +2,7 @@ import client from "@/config/api";
 
 const path='/books'
 
-async function getBooks(data){
+async function getBooks(page,pageSize,data){
     try{
         let queryPath=''
         if(data){
@@ -12,7 +12,13 @@ async function getBooks(data){
                 queryPath=queryPath+key+'='+data[key]+'&'
             }
         }
-        const res=await client.get(path+queryPath)
+        const res=await client.get(path,{
+            params:{
+                ...data,
+                page,
+                pageSize
+            }
+        })
         return res
     }catch(e){
         return e
