@@ -3,12 +3,13 @@ import * as queryString from "querystring";
 
 const path='/pdfbooks'
 
-async function getPdfBooks(page,category){
+async function getPdfBooks(page,pageSize,category){
     try {
         const res=await client.get(path,{
             params:{
                 category,
-                page
+                page,
+                pageSize
             }
         })
         return res

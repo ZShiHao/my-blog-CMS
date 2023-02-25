@@ -6,10 +6,16 @@ import {Delete,Edit,Download,Setting,DocumentAdd,Search,Refresh} from "@element-
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {getBookCategories} from "@/apis/bookCategory";
 import moment from 'moment'
+import {getPdfBooks} from "@/apis/pdfBooks";
 
 const router=useRouter()
 
 const searchText=ref('')
+
+const pageSize=ref(10)
+const currentPage=ref(1)
+const totalCount=ref(0)
+
 
 const loading=ref(true)
 const books=ref([]) //电子书
@@ -26,8 +32,8 @@ const form=reactive({
 
 async function searchBookByTitle(){
   try {
-    const res=await getBooks({title:searchText.value})
-    books.value=res.data.data
+    const res=await getBooks(1,pageSize.value,{title:searchText.value})
+    books.value=res.data.data.books
   } catch (e) {
     console.log(e)
   }
@@ -36,8 +42,8 @@ async function searchBookByTitle(){
 async function refreshBookTable(){
   try {
     searchText.value=''
-    const res=await getBooks()
-    books.value=res.data.data
+    const res=await getBooks(1,pageSize.value,{})
+    books.value=res.data.data.books
   } catch (e) {
     console.log(e)
   }
@@ -58,6 +64,14 @@ async function handleDownloadBook(row){
   }
 }
 
+async function loadNewPage(page){
+   loading.value=true
+   const res=await getBooks(page,pageSize.value,{})
+   const body=res.data
+   books.value=body.data.books
+   loading.value=false
+}
+
 async function handleDeleteBlog(row){
 
   try {
@@ -75,8 +89,8 @@ async function handleDeleteBlog(row){
       type: 'success',
       message: 'Delete completed',
     })
-    const res=await getBooks()
-    books.value=res.data.data
+    const res=await getBooks(1,pageSize.value,{})
+    books.value=res.data.data.books
 
   }catch (e) {
   }
@@ -107,8 +121,9 @@ async function submitSetting(){
 }
 
 onMounted(async ()=>{
-  const res=await getBooks()
-  books.value=res.data.data
+  const res=await getBooks(1,pageSize.value,{})
+  books.value=res.data.data.books
+   totalCount.value=res.data.data.totalCount
    loading.value=false
 })
 </script>
@@ -128,7 +143,7 @@ onMounted(async ()=>{
       <el-button type="primary" :icon="DocumentAdd" @click="router.push('/books/addBook')"></el-button>
     </header>
     <section>
-      <el-table v-loading="loading" :data="books">
+      <el-table v-loading="loading" height="700" :data="books">
         <el-table-column fixed prop="cover" label="Cover">
           <template #default="scope">
             <img :src="scope.row.cover" style="width: 112px;height: 148px" alt="cover">
@@ -175,6 +190,15 @@ onMounted(async ()=>{
           </template>
         </el-table-column>
       </el-table>
+       <footer class="pagination">
+          <el-pagination
+              :page-size="pageSize"
+              :pager-count="11"
+              layout="prev, pager, next"
+              :total="totalCount"
+              @current-change="loadNewPage"
+          />
+       </footer>
     </section>
     <el-dialog v-model="dialogVisible" title="Book Setting" width="30%" draggable>
       <div class="form_outer">
@@ -226,5 +250,10 @@ onMounted(async ()=>{
   width: 300px;
 }
 
+.pagination{
+   display: flex;
+   justify-content: center;
+   padding-top: 20px;
+}
 
 </style>
