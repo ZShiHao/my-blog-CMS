@@ -19,6 +19,10 @@ const router = createRouter({
       component:MainView,
       children:[
         {
+          path:'home',
+          component:Home
+        },
+        {
           path:'blog',
           component:BlogManagement
         },
@@ -57,15 +61,21 @@ const router = createRouter({
 })
 
 router.beforeEach((to,from)=>{
+  const token=window.localStorage.getItem('access_token')
   if (to.name!=='login'){
-    const token=window.localStorage.getItem('access_token')
     if (token===null){
       return {
         name:'login'
       }
     }
   }else{
-    return true
+    if (token!==null){
+      return {
+        path:'/'
+      }
+    }else{
+      return true
+    }
   }
 })
 
