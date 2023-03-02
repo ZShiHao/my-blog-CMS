@@ -1,13 +1,22 @@
 <script setup>
 import {RouterView} from 'vue-router'
 import {onMounted,ref} from 'vue'
-import {Document,House,Reading,Guide} from "@element-plus/icons-vue";
+import {Document,House,Reading,Guide,UserFilled,User} from "@element-plus/icons-vue";
 const suggestions=ref(['zhang','shi','hao'])
 const state=ref('')
 function querySearch(queryString,cb){
   const result=suggestions.value
   cb(result)
 }
+
+async function logoutHandler(){
+   try {
+
+   } catch (e) {
+
+   }
+}
+
 onMounted(()=>{
 
 })
@@ -16,17 +25,30 @@ onMounted(()=>{
 <template>
     <div class="h-full">
         <header class="p-3 flex justify-end  header">
-          <el-autocomplete
-              :fetch-suggestions="querySearch"
-              v-model="state"
-              placeholder="search"
-          >
-            <template #suffix>
-            </template>
-            <template #default="{item}">
-              <div>{{item}}</div>
-            </template>
-          </el-autocomplete>
+<!--          <el-autocomplete-->
+<!--              :fetch-suggestions="querySearch"-->
+<!--              v-model="state"-->
+<!--              placeholder="search"-->
+<!--          >-->
+<!--            <template #suffix>-->
+<!--            </template>-->
+<!--            <template #default="{item}">-->
+<!--              <div>{{item}}</div>-->
+<!--            </template>-->
+<!--          </el-autocomplete>-->
+           <el-dropdown>
+              <div class="avatar" @click="">
+                 <el-avatar :icon="UserFilled" />
+              </div>
+              <template #dropdown>
+                 <el-dropdown-menu>
+                    <el-dropdown-item>Action 1</el-dropdown-item>
+                    <el-dropdown-item>Action 2</el-dropdown-item>
+                    <el-dropdown-item disabled>Action 4</el-dropdown-item>
+                    <el-dropdown-item :icon="User" divided @click="logoutHandler">Log out</el-dropdown-item>
+                 </el-dropdown-menu>
+              </template>
+           </el-dropdown>
         </header>
         <section class="flex h-full main">
           <el-menu
@@ -66,6 +88,10 @@ onMounted(()=>{
    width: 100%;
    position: fixed;
    z-index: 99;
+   .avatar{
+      cursor: pointer;
+
+   }
 }
 .main{
    padding-top: 57px;

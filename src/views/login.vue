@@ -1,10 +1,13 @@
 <script setup>
 import {RouterView} from 'vue-router'
 import {defineProps, defineEmits, ref} from 'vue'
+import { useRouter } from 'vue-router'
 import validator from 'validator';
+import hash from 'object-hash'
 import {ElMessage} from "element-plus";
+import {login,register} from "@/apis/user";
 
-const register=ref(false)
+const if_register=ref(false)
 
 const user=ref('')
 const password=ref('')
@@ -12,6 +15,8 @@ const type=ref(2) // 判断是手机号注册还是邮箱注册
 const re_password=ref('') //仅校验用,不上传
 
 const validate=ref(false)
+
+const router = useRouter()
 
 // 效验手机号还是邮箱
 function validateUser(){
@@ -24,7 +29,7 @@ function validateUser(){
    }else{
       ElMessage({
          type: 'error',
-         message: '请输入手机号或者邮箱',
+         message: '请输入正确的手机号或者邮箱',
       })
       return false
    }
@@ -33,9 +38,18 @@ function validateUser(){
 async function loginHandler(){
    try {
       if (validateUser()){
-         if (validator.isStrongPassword(password.value)){
-            //验证通过
-
+         // 登录账号验证通过
+         if (validator.isStrongPassword(password.value,{
+            minSymbols:0
+         })){
+            //强密码验证通过
+            const data={
+               user:user.value,
+               password:hash.MD5(password.value),
+               type:type.value
+            }
+            const res=await login(data)
+            console.log(res)
          }else{
             ElMessage({
                type: 'error',
@@ -58,9 +72,24 @@ async function registerHandler(){
                message: '请输入相同的密码',
             })
          }else{
-            if (validator.isStrongPassword(password.value)){
-               // 验证通过
-
+            if (validator.isStrongPassword(password.value,{
+               minSymbols:0
+            })){
+               // 强密码验证通过
+               const data={
+                  user:user.value,
+                  password:hash.MD5(password.value),
+                  type:type.value
+               }
+               const res=await register(data)
+               if(res.data.code===200){
+                  ElMessage({
+                     type: 'success',
+                     message: '注册成功',
+                  })
+                  window.localStorage.setItem('access_token',res.data.data.access_token)
+                  await router.push('/')
+               }
             }else{
                ElMessage({
                   type: 'error',
@@ -80,24 +109,24 @@ async function registerHandler(){
          <form class="form" action="">
             <input class="input" type="text" v-model="user"  placeholder="Mobile Number or Email">
             <input class="input" type="password" v-model="password" placeholder="Password">
-            <input class="input" v-show="register" v-model="re_password" type="password" placeholder="Re-Password">
+            <input class="input" v-show="if_register" v-model="re_password" type="password" placeholder="Re-Password">
          </form>
-         <button v-if="!register"   :class="user.length>=10&&password.length>=8?'button_active':'button_disable'" @click="loginHandler">
+         <button v-if="!if_register"   :class="user.length>=10&&password.length>=8?'button_active':'button_disable'" @click="loginHandler">
             Log in
          </button>
          <button v-else :class="user.length>=10&&password.length>=8&&re_password.length===password.length?'button_active':'button_disable'" @click="registerHandler">
             Sign Up
          </button>
    </section>
-   <section v-if="!register" class="subcontain">
+   <section v-if="!if_register" class="subcontain">
          Don't have an account?
-      <span class="register" @click="register=true;password='';user='';re_password=''">
+      <span class="register" @click="if_register=true;password='';user='';re_password=''">
          Sign up
       </span>
    </section>
    <section v-else class="subcontain">
       Have have an account?
-      <span class="register" @click="register=false;password='';user='';re_password=''">
+      <span class="register" @click="if_register=false;password='';user='';re_password=''">
          Log in
       </span>
    </section>
