@@ -2,7 +2,12 @@
 import {RouterView} from 'vue-router'
 import {onMounted,ref} from 'vue'
 import {Document,House,Reading,Guide,UserFilled,User} from "@element-plus/icons-vue";
+import {logout} from "@/apis/user";
+import {ElMessage} from "element-plus";
+import { useRouter } from 'vue-router'
 const suggestions=ref(['zhang','shi','hao'])
+const router = useRouter()
+
 const state=ref('')
 function querySearch(queryString,cb){
   const result=suggestions.value
@@ -11,7 +16,18 @@ function querySearch(queryString,cb){
 
 async function logoutHandler(){
    try {
-
+      const res=await logout({
+         access_token:window.localStorage.getItem('access_token')
+      })
+      if(res.data.code===200){
+         ElMessage({
+            type: 'success',
+            message: '退出登录',
+         })
+         window.localStorage.removeItem('access_token')
+         window.localStorage.removeItem('user_info')
+         await router.push('/login')
+      }
    } catch (e) {
 
    }

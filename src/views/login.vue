@@ -49,7 +49,20 @@ async function loginHandler(){
                type:type.value
             }
             const res=await login(data)
-            console.log(res)
+            if(res.data.code===200){
+               ElMessage({
+                  type: 'success',
+                  message: '登录成功',
+               })
+               window.localStorage.setItem('access_token',res.data.data.access_token)
+               window.localStorage.setItem('user_info',JSON.stringify(res.data.data.user_info))
+               await router.push('/')
+            }else {
+               ElMessage({
+                  type: 'error',
+                  message: res.data.message,
+               })
+            }
          }else{
             ElMessage({
                type: 'error',
@@ -88,7 +101,13 @@ async function registerHandler(){
                      message: '注册成功',
                   })
                   window.localStorage.setItem('access_token',res.data.data.access_token)
+                  window.localStorage.setItem('user_info',JSON.stringify(res.data.data.user_info))
                   await router.push('/')
+               }else {
+                  ElMessage({
+                     type: 'error',
+                     message: res.data.message,
+                  })
                }
             }else{
                ElMessage({

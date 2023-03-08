@@ -11,3 +11,9 @@ export const login=data=>client({
     url:'/user/login',
     data
 })
+
+export const logout=data=>client({
+    method:'post',
+    url:'/user/logout',
+    data
+})
