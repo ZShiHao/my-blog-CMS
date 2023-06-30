@@ -9,6 +9,8 @@ import router from './router'
 import './assets/main.css'
 
 const app = createApp(App)
+console.log(App)
+console.log(router)
 
 app.use(ElementPlus)
 app.use(createPinia())

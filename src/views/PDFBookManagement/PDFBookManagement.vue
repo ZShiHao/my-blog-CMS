@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {onMounted, reactive, ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {getPdfBooks,uploadPdfBook,updateBookStatus,deleteBook} from '@/apis/pdfBooks'
@@ -21,7 +21,17 @@ const currentPage=ref(1)
 const currentCategory=ref('')
 const totalCount=ref(0)
 const loading=ref(true)
-
+let s = 'sdf'
+type States=1|2|3
+interface User {
+ name: String,
+ id:Number
+}
+let states: User = {
+ name:'sdf',
+ id:1
+}
+console.log(states.name)
 
 async function handleSelectionChange(row) {
  selectionRows.value.push(row)
@@ -121,7 +131,7 @@ onMounted(async ()=>{
 <!--    <header>-->
 <!--      <el-input-->
 <!--          v-model="searchText"-->
-<!--          class="w-50 m-2"-->
+<!--          class="m-2 w-50"-->
 <!--          size="large"-->
 <!--          placeholder="Please Input"-->
 <!--          :prefix-icon="Search"-->
