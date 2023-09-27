@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {onMounted, ref, nextTick, reactive} from "vue";
 import {getBookCategories,addBookSubCategory,deleteBookCategory,deleteBookSubCategory,addBookCategory} from "@/apis/bookCategory";
 import {Delete,Plus} from '@element-plus/icons-vue'
@@ -114,12 +114,12 @@ onMounted(async ()=>{
                v-if="newSubCategoryVisible&&currentEditingCategory._id===category._id"
                ref="InputRef"
                v-model="newSubCategory"
-               class="ml-1 w-20"
+               class="w-20 ml-1"
                size="small"
                @keyup.enter="submitNewSubCategory(index)"
                @blur="inputBlur"
            />
-           <el-button v-else class="button-new-tag ml-1" size="small" @click="showSubCategoryInput(category)">
+           <el-button v-else class="ml-1 button-new-tag" size="small" @click="showSubCategoryInput(category)">
               + New SubCategory
            </el-button>
            <el-button type="danger" size="small" v-show="currentEditingCategory._id===category._id" :icon="Delete" @click="deleteCategory(category)"></el-button>

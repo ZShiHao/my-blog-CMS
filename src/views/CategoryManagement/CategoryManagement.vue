@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {onMounted,ref} from "vue";
 import {getBookCategories,addBookSubCategory} from "@/apis/bookCategory";
 import BookCategory from './components/BookCategory.vue'

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {reactive,ref,onMounted} from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import { UploadFilled,Delete, Download, Plus, ZoomIn ,ArrowRight} from '@element-plus/icons-vue'

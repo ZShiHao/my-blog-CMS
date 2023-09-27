@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {onMounted, reactive, ref} from "vue";
 import {useRoute, useRouter} from 'vue-router'
 import {ArrowRight, Plus} from '@element-plus/icons-vue'

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {onMounted, ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {getBlogList,updateBlogStatus,deleteBlog} from "@/apis/blogs";

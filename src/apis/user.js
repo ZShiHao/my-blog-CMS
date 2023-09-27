@@ -2,7 +2,7 @@ import client from "@/config/api";
 
 export const register=data=>client({
     method:'post',
-    url:'/user/register',
+    url:'/api/users/signup',
     data
 })
 
